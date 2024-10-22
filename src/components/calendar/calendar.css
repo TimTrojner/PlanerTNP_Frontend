@@ -1,0 +1,157 @@
+/* General layout for the calendar */
+.calendar-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 20px;
+}
+
+.calendar-header {
+    display: flex;
+    justify-content: space-between;
+    width: 80%;
+}
+
+.calendar-grid-wrapper {
+    display: flex;
+    align-items: flex-start;
+    position: relative;
+    border: #9c9c9c 2px solid;
+}
+
+/* Time labels, aligned with calendar blocks for larger screens */
+.time-label-column {
+    padding-top: 73px;
+    display: grid;
+    grid-template-rows: repeat(48, 65px);
+    /* Same as the calendar time slots */
+    gap: 2px;
+    width: 40px;
+    /* Reduced width */
+    background-color: #e0e0e0;
+    /* Background for time labels */
+    flex-shrink: 0;
+    position: sticky;
+    left: 0;
+    padding-bottom: 21px;
+}
+
+.time-label {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 12px;
+    padding: 5px;
+    border-bottom: 1px solid #ccc;
+    background-color: #f4f4f4;
+    /* Background for individual time label */
+}
+
+.calendar-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    /* 7 days per week */
+    width: 100%;
+    overflow-x: auto;
+    /* Allow horizontal scrolling for long day names */
+}
+
+.calendar-day {
+    display: flex;
+    flex-direction: column;
+    background-color: #f0f0f0;
+    border: 1px solid #ccc;
+    padding: 10px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    text-align: center;
+    padding-bottom: 20px;
+}
+
+.calendar-grid h3{
+    background-color: #f0f0f0;
+    text-align: center;
+    margin: 0;
+    height: 60px;
+    width: 10vw;
+    border: 1px solid #ccc;
+}
+
+.time-slots {
+    display: grid;
+    grid-template-rows: repeat(48, 65px);
+    /* Matches time slots */
+    gap: 2px;
+}
+
+.time-slot {
+    display: flex;
+    align-items: center;
+    background-color: rgb(209, 209, 209);
+    border: 1px solid #ddd;
+    font-size: 12px;
+    position: relative;
+}
+
+/* Time label inside each time slot for small screens */
+.time-label-inline {
+    display: none;
+    /* Hidden on larger screens */
+    width: 40px;
+    text-align: right;
+    padding-right: 10px;
+}
+
+/* Placeholder for content inside each slot */
+.content-area {
+    flex-grow: 1;
+    background-color: #ffffff;
+    /* Placeholder background for content */
+    height: 100%;
+}
+
+@media (max-width: 1250px) {
+    .calendar-grid h3 {
+        width: 11vw;
+    }
+}
+
+@media (max-width: 1000px) {
+    .calendar-grid h3 {
+        width: 12vw;
+    }
+}
+
+/* Responsive styles for smaller screens */
+@media (max-width: 830px) {
+    .calendar-grid-wrapper {
+        display: block;
+        /* Stack everything vertically */
+    }
+
+    /* Hide the time label columns on small screens */
+    .time-label-column {
+        display: none;
+    }
+
+    /* Show inline time labels inside each time slot */
+    .time-label-inline {
+        display: block;
+    }
+
+    .time-slot {
+        display: flex;
+        justify-content: flex-start;
+        /* Align time label and content horizontally */
+    }
+
+    .calendar-grid {
+        grid-template-columns: repeat(1, 100vw);
+        /* Show one day per view on smaller screens */
+    }
+
+    .calendar-grid h3 {
+        width: 100vw;
+    }
+}

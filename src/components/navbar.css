@@ -33,7 +33,7 @@
     color: #3498db;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 830px) {
     .navbar {
         flex-direction: column;
         align-items: center;

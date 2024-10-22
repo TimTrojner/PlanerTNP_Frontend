@@ -18,7 +18,7 @@ function Navbar() {
 
     function logout() {
         Cookie.remove("signed_in_user");
-        redirect("/idea-center");
+        redirect("/");
         window.location.reload();
     }
 
@@ -27,9 +27,6 @@ function Navbar() {
             <ul className="navbar-list">
                 <li className={`navbar-item ${location.pathname === '/' ? 'active' : ''}`}>
                     <Link to="/">Home</Link>
-                </li>
-                <li className={`navbar-item ${location.pathname === '/idea-center' ? 'active' : ''}`}>
-                    <Link to="/idea-center">Idea Center</Link>
                 </li>
                 {signedIn !== false ? (
                     <>
