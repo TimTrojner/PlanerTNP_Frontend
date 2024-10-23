@@ -15,11 +15,13 @@ function addDays(date, days) {
     newDate.setDate(date.getDate() + days);
     return newDate;
 }
+const filters = ["#0000FF", "#FF0000", "#008000" , "#FFFF00", "#FFA500", "#800080", "#FFC0CB", "#A52A2A", "#FF00FF", "#808080"];
 
 function Calendar() {
     const location = useLocation();
     const [signedIn, setSignedIn] = useState(false);
     const [currentWeek, setCurrentWeek] = useState(getStartOfWeek(new Date()));
+    const [selectedFilter, setSelectedFilter] = useState(null);
 
     useEffect(() => {
         if (Cookie.get("signed_in_user") !== undefined) {
@@ -52,25 +54,34 @@ function Calendar() {
     return (
         <div className="calendar-container">
             <div className="calendar-header">
-                <button onClick={handlePrevWeek}>Previous Week</button>
+                <button className="change-week" onClick={handlePrevWeek}>←</button>
                 <h2>Week of {currentWeek.toDateString()}</h2>
-                <button onClick={handleNextWeek}>Next Week</button>
+                <button className="change-week" onClick={handleNextWeek}>→</button>
             </div>
-
+            <div className="filters">
+                <div onClick={() => setSelectedFilter(null)} className="clear-filter">Clear</div>
+                {filters.map((filter, index) => (
+                    <div
+                        key={index}
+                        onClick={() => setSelectedFilter(index)}
+                        className={`${selectedFilter==index ? 'active-filter' : 'filter'}`}
+                        style={{ backgroundColor: filter }}
+                    >
+                        ⠀
+                    </div>
+                ))}
+            </div>
             <div className="calendar-grid-wrapper">
-                {/* Time labels on the left for larger screens */}
                 <div className="time-label-column">
                     {timeSlots.map((slot, slotIndex) => (
                         <div key={slotIndex} className="time-label">{slot}</div>
                     ))}
                 </div>
-
-                {/* Calendar grid showing each day of the week */}
                 <div className="calendar-grid">
                     {weekDays.map((day, index) => (
-                        <div>
+                        <div key={index}>
                             <h3>{day.toDateString()}</h3>
-                            <div key={index} className="calendar-day">
+                            <div className="calendar-day">
                                 <div className="time-slots">
                                     {timeSlots.map((slot, slotIndex) => (
                                         <>

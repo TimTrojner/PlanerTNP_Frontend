@@ -37,9 +37,13 @@
   }
 }
 
-body{
-  background-image: url('src/background.svg');
+#root {
+  background-image: url('src/bg.jpg');
   background-position: center;
-  background-repeat: no-repeat;
-  background-size: cover;
+  background-repeat: repeat; /* Changed from 'repeat' to 'repeat' */
+  z-index: -1;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
 }
