@@ -52,6 +52,10 @@
     cursor: pointer;
 }
 
+.clear-filter:hover{
+    color: red;
+}
+
 .active-filter{
     border: #000000 2px solid;
     width: 36px;
@@ -67,6 +71,12 @@
 
 .filter:hover {
     cursor: pointer;
+    opacity: 0.7;
+}
+
+.active-filter:hover {
+    cursor: pointer;
+    opacity: 0.7;
 }
 
 .time-label-column {

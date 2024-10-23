@@ -15,21 +15,28 @@ function addDays(date, days) {
     newDate.setDate(date.getDate() + days);
     return newDate;
 }
+
 const filters = ["#0000FF", "#FF0000", "#008000", "#FFFF00", "#FFA500", "#800080", "#FFC0CB", "#A52A2A", "#FF00FF", "#808080"];
 
-const tmpdata = [{ "task_name": "task1", "description": "neke neke", "color": "#FF0000", "start_time": "2022-01-01T10:00:00", "end_time": "2022-01-01T12:00:00" }, { "task_name": "task2", "description": "neke neke", "color": "#FF00FF", "start_time": "2022-01-01T14:00:00", "end_time": "2022-01-01T16:00:00" }, { "task_name": "task3", "description": "neke neke", "color": "#00FF00", "start_time": "2022-01-01T18:00:00", "end_time": "2022-01-01T20:00:00" }, { "task_name": "task4", "description": "neke neke", "color": "#808080", "start_time": "2022-01-01T22:00:00", "end_time": "2022-01-01T23:00:00" }];
+const tmpdata = [
+    { "task_name": "task1", "description": "neke neke", "color": "#FF0000", "start_time": "2024-10-22T10:00:00", "end_time": "2024-10-22T12:00:00" },
+    { "task_name": "task2", "description": "neke neke", "color": "#FF00FF", "start_time": "2024-10-22T14:00:00", "end_time": "2024-10-23T16:00:00" },
+    { "task_name": "task3", "description": "neke neke", "color": "#00FF00", "start_time": "2024-10-23T18:00:00", "end_time": "2024-10-24T20:00:00" },
+    { "task_name": "task4", "description": "neke neke", "color": "#808080", "start_time": "2024-10-24T22:00:00", "end_time": "2024-10-25T23:00:00" }
+];
+
 
 function Calendar() {
     const location = useLocation();
     const [signedIn, setSignedIn] = useState(false);
     const [currentWeek, setCurrentWeek] = useState(getStartOfWeek(new Date()));
     const [selectedFilter, setSelectedFilter] = useState(null);
-    const [tasks, setTasks] = useState({});
+    const [tasks, setTasks] = useState(tmpdata);
 
     useEffect(() => {
         if (Cookie.get("signed_in_user") !== undefined) {
             setSignedIn(Cookie.get("signed_in_user"));
-            //api call to get le data and set it to tasks
+            // API call to fetch activities and update tasks
 
         } else {
             setSignedIn(false);
@@ -56,16 +63,42 @@ function Calendar() {
         timeSlots.push(`${hours.toString().padStart(2, '0')}:${minutes}`);
     }
 
-    function parseTime(times) {
-        var finalised_time = [];
-        for(var i in tmpdata){
-            var tmp=tmpdata[i];
-            let start=Date.parse(tmpdata[i].start_time);
-            let end=Date.parse(tmpdata[i].end);
-            
-            
-        }
-    }
+    const isSameDay = (d1, d2) => {
+        return d1.getFullYear() === d2.getFullYear() &&
+            d1.getMonth() === d2.getMonth() &&
+            d1.getDate() === d2.getDate();
+    };
+
+    const filteredTasks = tmpdata.filter(task => {
+        const startDate = new Date(task.start_time);
+        const endDate = new Date(task.end_time);
+        return weekDays.some(day => isSameDay(day, startDate) || isSameDay(day, endDate));
+    });
+
+    const renderTaskInTimeSlot = (day, slot) => {
+        const dayTasks = filteredTasks.filter(task => {
+            const taskStart = new Date(task.start_time);
+            const taskEnd = new Date(task.end_time);
+            const slotHour = parseInt(slot.split(":")[0]);
+            const slotMinutes = parseInt(slot.split(":")[1]);
+    
+            if (!isSameDay(taskStart, day) && !isSameDay(taskEnd, day)) {
+                return false;
+            }
+    
+            const slotTime = new Date(day);
+            slotTime.setHours(slotHour, slotMinutes, 0, 0);
+    
+            return taskStart <= slotTime && taskEnd > slotTime;
+        });
+    
+        return dayTasks.map((task, index) => (
+            <b key={index} className="task-ribbon" style={{ backgroundColor: task.color }}>
+                ⠀
+            </b>
+        ));
+    };
+    
 
     return (
         <div className="calendar-container">
@@ -101,19 +134,11 @@ function Calendar() {
                             <div className="calendar-day">
                                 <div className="time-slots">
                                     {timeSlots.map((slot, slotIndex) => (
-                                        <>
-                                            <div key={slotIndex} className="time-slot">
-                                                <div className="time-label-inline">{slot}</div> {/* Time label inside slot for small screens */}
-                                                <div className="content-area">
-                                                    {
-                                                        filters.map((filter, filterIndex) => (
-                                                            <>
-                                                                <b>⠀</b>
-                                                            </>
-                                                        ))}
-                                                </div> {/* Content will be added here later */}
+                                        <div key={slotIndex} className="time-slot">
+                                            <div className="content-area">
+                                                {renderTaskInTimeSlot(day, slot)}
                                             </div>
-                                        </>
+                                        </div>
                                     ))}
                                 </div>
                             </div>
