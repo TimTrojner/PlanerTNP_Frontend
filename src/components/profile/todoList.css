@@ -1,0 +1,177 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300&display=swap');
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.page-background {
+    background-image: url('/src/src/bg2.jpg');
+    background-size: cover;
+  background-position: center;
+  min-height: 100vh;
+  background-repeat: no-repeat;
+  font-family: 'Poppins', sans-serif;
+  padding: 20px;
+}
+
+.todo-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  color: #333;
+}
+
+.todo-container h1 {
+  text-align: center;
+  margin-bottom: 30px;
+  color: #2c3e50;
+}
+
+.todo-lists {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.todo-list {
+  background-color: rgba(245, 245, 245, 0.9);
+  border-radius: 15px;
+  padding: 20px;
+  flex: 1;
+  min-width: 300px;
+  position: relative;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.todo-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.todo-header h2 {
+  color: #2c3e50;
+}
+
+.add-task-button {
+  background-color: #3498db;
+  color: #fff;
+  border: none;
+  border-radius: 50%;
+  width: 35px;
+  height: 35px;
+  font-size: 24px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.add-task-button:hover {
+  background-color: #2980b9;
+}
+
+.task-item {
+  list-style: none;
+  padding: 10px;
+  border-bottom: 1px solid #ddd;
+}
+
+.task-item:last-child {
+  border-bottom: none;
+}
+
+.task-item.urgent {
+  color: #e74c3c;
+  font-weight: bold;
+}
+
+/* Modal Styles */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background-color: #fff;
+  padding: 30px;
+  border-radius: 15px;
+  width: 400px;
+  position: relative;
+}
+
+.modal-content h2 {
+  margin-bottom: 20px;
+  color: #2c3e50;
+}
+
+.form-group {
+  margin-bottom: 15px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 5px;
+  color: #555;
+}
+
+.form-group input[type="text"] {
+  width: 100%;
+  padding: 10px;
+  border: 2px solid #ddd;
+  border-radius: 10px;
+  background-color: #fff;
+}
+
+.checkbox-group {
+  display: flex;
+  align-items: center;
+}
+
+.checkbox-group label {
+  margin-left: 5px;
+  font-size: 0.9em;
+  color: #555;
+}
+
+.modal-buttons {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+}
+
+.submit-button {
+  padding: 10px 20px;
+  background-color: #3498db;
+  color: #fff;
+  border: none;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.submit-button:hover {
+  background-color: #2980b9;
+}
+
+.cancel-button {
+  padding: 10px 20px;
+  background-color: #7f8c8d;
+  color: #fff;
+  border: none;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.cancel-button:hover {
+  background-color: #95a5a6;
+}

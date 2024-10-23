@@ -1,9 +1,10 @@
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom'; 
 import axios from 'axios';
 import sha256 from 'crypto-js/sha256';
-import Cookie from "js-cookie";
-import React, { useState } from 'react';
-import { useNavigate } from "react-router";
-import env from "../../env.json";
+import Cookie from 'js-cookie';
+import { GoogleLogin } from 'react-google-login';
+import env from '../../env.json';
 import './login.css';
 
 function Register() {
@@ -12,71 +13,114 @@ function Register() {
   const [password, setPassword] = useState('');
   const navigate = useNavigate();
 
+  useEffect(() => {
+    // Disable scrolling when on the register page
+    document.body.classList.add('no-scroll');
+
+    return () => {
+      document.body.classList.remove('no-scroll');
+    };
+  }, []);
+
   const handleSubmit = async (e) => {
-    // Handle login logic here
-    var ee = sha256(password).toString();
-    console.log(ee);
-    console.log('Username:', username);
-    console.log('Email:', email);
-    console.log('Password:', password);
+    e.preventDefault(); 
+
+    const hashedPassword = sha256(password).toString();
     const data = {
       Username: username,
       Email: email,
-      Password: sha256(password).toString()
+      Password: hashedPassword
     };
 
-    const response = await axios.post(`${env.api}/users/register`, data, {
-      headers: {
-        'Content-Type': 'application/json'
+    try {
+      const response = await axios.post(`${env.api}/users/register`, data, {
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      });
+      if (response && response.status === 200) {
+        Cookie.set("signed_in_user", response.data);
+        navigate("/");
+        window.location.reload();
       }
-    }).catch((error) => {
+    } catch (error) {
       console.log('Error:', error);
-      alert('Username already exists');
-    });
+      alert('Registration failed. Username or email may already exist.');
+    }
+  };
 
-    console.log('Response:', response);
-    if (response !== undefined && response.status !== 400) {
-      Cookie.set("signed_in_user", response.data);
-      navigate("/");
-      window.location.reload();
+  const handleGoogleLogin = async (googleData) => {
+    const { tokenObj } = googleData;
+    try {
+      const response = await axios.post(`${env.api}/users/googleRegister`, {
+        token: tokenObj.id_token
+      }, {
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      });
+      if (response.data && response.status === 200) {
+        Cookie.set("signed_in_user", response.data);
+        navigate("/");
+        window.location.reload();
+      }
+    } catch (error) {
+      console.log('Error:', error);
+      alert('Google registration failed');
     }
   };
 
   return (
-    <div className="login-container">
-      <h1>Register</h1>
-      <div className="login-form">
-        <div className="form-group">
-          <label htmlFor="username">Username:</label>
-          <input
-            type="text"
-            id="username"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-            required
-          />
+    <div className="login-background">
+      <div className="login-container">
+        <h1>Register</h1>
+        <form className="login-form" onSubmit={handleSubmit}>
+          <div className="form-group">
+            <label htmlFor="username">Username:</label>
+            <input
+              type="text"
+              id="username"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              required
+            />
+          </div>
+          <div className="form-group">
+            <label htmlFor="email">Email:</label>
+            <input
+              type="email"
+              id="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+            />
+          </div>
+          <div className="form-group">
+            <label htmlFor="password">Password:</label>
+            <input
+              type="password"
+              id="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+            />
+          </div>
+          <button type="submit" className="login-button">Register</button>
+        </form>
+
+        <div className="separator">Or register with <strong>Google</strong></div>
+        <GoogleLogin
+          clientId="YOUR_GOOGLE_CLIENT_ID"
+          buttonText="Register with Google"
+          onSuccess={handleGoogleLogin}
+          onFailure={handleGoogleLogin}
+          cookiePolicy={'single_host_origin'}
+        />
+
+
+        <div className="terms">
+          By clicking Register, you agree to our <strong>Terms of Service</strong> and <strong>Privacy Policy</strong>.
         </div>
-        <div className="form-group">
-          <label htmlFor="email">Email:</label>
-          <input
-            type="email"
-            id="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-          />
-        </div>
-        <div className="form-group">
-          <label htmlFor="password">Password:</label>
-          <input
-            type="password"
-            id="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-          />
-        </div>
-        <button type="submit" className="login-button" onClick={handleSubmit}>Register</button>
       </div>
     </div>
   );
