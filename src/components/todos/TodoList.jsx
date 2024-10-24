@@ -40,7 +40,6 @@ function TodoList() {
 
   // Handle submitting the new task
   const handleSubmit = (e) => {
-    e.preventDefault();
     if (newTask.name.trim() === '') return;
 
     setTasks((prevTasks) => ({
@@ -98,7 +97,7 @@ function TodoList() {
             onClick={(e) => e.stopPropagation()}
           >
             <h2>Add Task to {currentCategory.charAt(0).toUpperCase() + currentCategory.slice(1)}</h2>
-            <form onSubmit={handleSubmit}>
+            <div>
               <div className="form-group">
                 <label htmlFor="taskName">Task Name:</label>
                 <input
@@ -122,7 +121,7 @@ function TodoList() {
                 </label>
               </div>
               <div className="modal-buttons">
-                <button type="submit" className="submit-button">
+                <button type="submit" className="submit-button" onClick={handleSubmit}>
                   Add Task
                 </button>
                 <button
@@ -133,7 +132,7 @@ function TodoList() {
                   Cancel
                 </button>
               </div>
-            </form>
+            </div>
           </div>
         </div>
       )}

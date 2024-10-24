@@ -3,8 +3,9 @@ import "./App.css";
 import Calendar from "./components/calendar/calendar";
 import Navbar from "./components/navbar";
 import Login from "./components/profile/login";
+import Profile from "./components/profile/profile";
 import Register from "./components/profile/register";
-import TodoList from './components/profile/TodoList';
+import TodoList from './components/todos/TodoList';
 
 function App() {
   return (
@@ -12,12 +13,10 @@ function App() {
       <Navbar />
       <Routes>
         <Route path="/" element={<Calendar />} />
+        <Route path="/profile" element={<Profile />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/todos" element={<TodoList />} />
-
-        {/*<Route path="/post-project" element={<PostProject />} />
-        <Route path="/post-idea" element={<PostIdea />} /> */}
       </Routes>
     </BrowserRouter>
   );
