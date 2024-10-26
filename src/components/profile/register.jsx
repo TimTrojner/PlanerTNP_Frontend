@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom'; 
 import axios from 'axios';
 import sha256 from 'crypto-js/sha256';
 import Cookie from 'js-cookie';
+import React, { useEffect, useState } from 'react';
 import { GoogleLogin } from 'react-google-login';
+import { useNavigate } from 'react-router-dom';
 import env from '../../env.json';
 import './login.css';
 
@@ -66,7 +66,6 @@ function Register() {
       }
     } catch (error) {
       console.log('Error:', error);
-      alert('Google registration failed');
     }
   };
 

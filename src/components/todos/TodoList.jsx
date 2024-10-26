@@ -46,7 +46,7 @@ function TodoList() {
       ...prevTasks,
       [currentCategory]: [...prevTasks[currentCategory], newTask],
     }));
-
+    //axios.post('http://localhost:5551/todos', newTask);
     // Close the modal and reset newTask
     handleCloseModal();
   };

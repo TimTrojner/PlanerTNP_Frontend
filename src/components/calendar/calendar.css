@@ -11,7 +11,7 @@
     display: flex;
     margin: 20px;
     justify-content: center;
-    border: #9c9c9c 10px solid;
+    border: #3498db 10px solid;
     background-color: rgba(240, 240, 240, 1);
     border-radius: 20px;
 }
@@ -22,9 +22,8 @@
 
 .calendar-grid-wrapper {
     display: flex;
-    align-items: flex-start;
     position: relative;
-    border: #9c9c9c 10px solid;
+    border: #3498db 10px solid;
     border-radius: 10px;
 }
 
@@ -43,7 +42,7 @@
     gap: 10px;
     padding: 5px;
     margin-bottom: 10px;
-    border: #9c9c9c 5px solid;
+    border: #3498db 5px solid;
     background-color: rgba(240, 240, 240, 1);
     border-radius: 20px;
 }
@@ -59,14 +58,14 @@
 .active-filter{
     border: #000000 2px solid;
     width: 36px;
-    height: 18px;
+    height: 20px;
     border-radius: 10px;
 }
 
 .filter {
     width: 40px;
     border-radius: 10px;
-    height: 22px;
+    height: 20px;
 }
 
 .filter:hover {
@@ -80,9 +79,9 @@
 }
 
 .time-label-column {
-    padding-top: 64px;
+    padding-top: 62px;
     display: grid;
-    grid-template-rows: repeat(48, 65px);
+    grid-template-rows: repeat(48, 85px);
     gap: 2px;
     width: 40px;
     background-color: #e0e0e0;
@@ -130,7 +129,7 @@
 
 .time-slots {
     display: grid;
-    grid-template-rows: repeat(48, 65px);
+    grid-template-rows: repeat(48, 85px);
     gap: 2px;
 }
 
@@ -141,6 +140,7 @@
     border: 1px solid #ddd;
     font-size: 12px;
     position: relative;
+    overflow: hidden;
 }
 
 /* Time label inside each time slot for small screens */
@@ -158,6 +158,23 @@
     background-color: #ffffff;
     /* Placeholder background for content */
     height: 100%;
+}
+
+.task-ribbon{
+    color: white;
+    overflow: hidden;
+    border-radius: 5px;
+}
+
+.import-data{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 10px;
+    padding: 10px;
+    border: #3498db 5px solid;
+    background-color: rgba(240, 240, 240, 1);
+    border-radius: 20px;
 }
 
 @media (max-width: 1250px) {

@@ -1,5 +1,5 @@
 import Cookie from "js-cookie";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useLocation } from "react-router-dom";
 import '../../App.css';
 import './calendar.css';
@@ -16,12 +16,12 @@ function addDays(date, days) {
     return newDate;
 }
 
-const filters = ["#0000FF", "#FF0000", "#008000", "#FFFF00", "#FFA500", "#800080", "#FFC0CB", "#A52A2A", "#FF00FF", "#808080"];
+const filters = ["#0000FF", "#FF0000", "#008000", "#999900", "#FFA500", "#800080", "#BB909B", "#A52A2A", "#FF00FF", "#808080"];
 
 const tmpdata = [
-    { "task_name": "task1", "description": "neke neke", "color": "#FF0000", "start_time": "2024-10-22T10:00:00", "end_time": "2024-10-22T12:00:00" },
+    { "task_name": "overflow: hidden;", "description": "neke neke", "color": "#FF0000", "start_time": "2024-10-22T14:00:00", "end_time": "2024-10-22T16:00:00" },
     { "task_name": "task2", "description": "neke neke", "color": "#FF00FF", "start_time": "2024-10-22T14:00:00", "end_time": "2024-10-23T16:00:00" },
-    { "task_name": "task3", "description": "neke neke", "color": "#00FF00", "start_time": "2024-10-23T18:00:00", "end_time": "2024-10-24T20:00:00" },
+    { "task_name": "task3", "description": "neke neke", "color": "#008000", "start_time": "2024-10-23T18:00:00", "end_time": "2024-10-24T20:00:00" },
     { "task_name": "task4", "description": "neke neke", "color": "#808080", "start_time": "2024-10-24T22:00:00", "end_time": "2024-10-25T23:00:00" }
 ];
 
@@ -32,11 +32,15 @@ function Calendar() {
     const [currentWeek, setCurrentWeek] = useState(getStartOfWeek(new Date()));
     const [selectedFilter, setSelectedFilter] = useState(null);
     const [tasks, setTasks] = useState(tmpdata);
+    const fileInputRef = useRef(null);
 
     useEffect(() => {
         if (Cookie.get("signed_in_user") !== undefined) {
             setSignedIn(Cookie.get("signed_in_user"));
-            // API call to fetch activities and update tasks
+            /*axios.get("http://localhost:5551/tasks").then((response) => {
+                setTasks(response.data);
+            });*/
+            setTasks(tmpdata);
 
         } else {
             setSignedIn(false);
@@ -69,7 +73,7 @@ function Calendar() {
             d1.getDate() === d2.getDate();
     };
 
-    const filteredTasks = tmpdata.filter(task => {
+    const filteredTasks = tasks.filter(task => {
         const startDate = new Date(task.start_time);
         const endDate = new Date(task.end_time);
         return weekDays.some(day => isSameDay(day, startDate) || isSameDay(day, endDate));
@@ -81,24 +85,41 @@ function Calendar() {
             const taskEnd = new Date(task.end_time);
             const slotHour = parseInt(slot.split(":")[0]);
             const slotMinutes = parseInt(slot.split(":")[1]);
-    
+
             if (!isSameDay(taskStart, day) && !isSameDay(taskEnd, day)) {
                 return false;
             }
-    
+
             const slotTime = new Date(day);
             slotTime.setHours(slotHour, slotMinutes, 0, 0);
-    
+
             return taskStart <= slotTime && taskEnd > slotTime;
         });
-    
+
         return dayTasks.map((task, index) => (
-            <b key={index} className="task-ribbon" style={{ backgroundColor: task.color }}>
-                ⠀
-            </b>
+            selectedFilter !== null && task.color !== filters[selectedFilter] ? null : (
+                <p key={index} className="task-ribbon" style={{ backgroundColor: task.color }}>
+                    <b>{/*⠀*/task.task_name}</b>
+                </p>
+            )
         ));
     };
-    
+
+    const handleFileImport = (event) => {
+        const file = event.target.files[0];
+        if (file && file.type === "application/json") {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                const jsonData = JSON.parse(e.target.result);
+                setTasks(prevTasks => [...prevTasks, jsonData]);
+                console.log(jsonData);
+            };
+            reader.readAsText(file);
+        } else {
+            alert("Please select a valid JSON file.");
+        }
+    };
+
 
     return (
         <div className="calendar-container">
@@ -146,6 +167,17 @@ function Calendar() {
                     ))}
                 </div>
             </div>
+            {signedIn !== false ? (
+                <div className="import-data">
+                    <span>Import your own schedule: </span>
+                    <input
+                        type="file"
+                        accept=".json"
+                        ref={fileInputRef}
+                        onChange={handleFileImport}
+                    />
+                </div>) : null
+            }
         </div>
     );
 }

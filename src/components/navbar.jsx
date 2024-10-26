@@ -30,6 +30,12 @@ function Navbar() {
                 </li>
                 {signedIn !== false ? (
                     <>
+                        <li className={`navbar-item ${location.pathname === '/todos' ? 'active' : ''}`}>
+                            <Link to="/todos">Todos</Link>
+                        </li>
+                        <li className={`navbar-item ${location.pathname === '/todo-histroy' ? 'active' : ''}`}>
+                            <Link to="/todo-history">Todos history</Link>
+                        </li>
                         <li className={`navbar-item ${location.pathname === '/profile' ? 'active' : ''}`}>
                             <Link to="/profile">Profile</Link>
                         </li>

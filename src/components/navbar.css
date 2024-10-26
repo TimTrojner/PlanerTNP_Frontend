@@ -5,11 +5,11 @@
 .navbar {
     position: sticky;
     top: 0;
-    background-color: #b2cbde;
+    background-color: #3498db;
     padding: 10px 20px;
     z-index: 1000;
     display: flex;
-    justify-content: flex-start; /* Changed to align items to the right */
+    justify-content: flex-end; /* Changed to align items to the right */
     font-family: 'Poppins', sans-serif; }
 
 .navbar-list {
@@ -25,14 +25,15 @@
 
 .navbar-item a {
     text-decoration: none;
-    color: #98bad5;
+    font-weight: bold;
+    color: #0d1b35;
     font-size: 18px;
     transition: color 0.3s;
 }
 
 .navbar-item a:hover,
 .navbar-item.active a {
-    color: #304674;
+    color: #f3f7ff;
 }
 
 @media (max-width: 830px) {

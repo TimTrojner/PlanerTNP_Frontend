@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from 'react';
-import { useNavigate } from "react-router";
 import axios from 'axios';
 import sha256 from 'crypto-js/sha256';
 import Cookie from "js-cookie";
+import React, { useEffect, useState } from 'react';
 import { GoogleLogin } from 'react-google-login';
+import { useNavigate } from "react-router";
 import env from "../../env.json";
 import './login.css';
 
@@ -54,7 +54,7 @@ function Login() {
         window.location.reload();
       }
     } catch (error) {
-      alert('Google login failed');
+      console.log(error);
     }
   };
 

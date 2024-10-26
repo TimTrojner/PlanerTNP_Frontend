@@ -1,6 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import './profile.css'; 
-
+import React, { useEffect, useState } from 'react';
+import './profile.css';
 
 function Profile() {
   // Mock user data
@@ -20,8 +19,9 @@ function Profile() {
 
   // Load mock data when the component mounts
   useEffect(() => {
-
-    // Retrieve user data from cookies 
+    /*axios.get('https://api.example.com/user-data').then((response) => {
+      setUserData(response.data);
+    });*/
 
     // mock data
     const mockData = {
@@ -59,13 +59,18 @@ function Profile() {
   };
 
   const handleSaveChanges = () => {
+    //axios.put('https://api.example.com/user-data', userData);
     alert('Changes saved!');
   };
 
   const handleDeleteAccount = () => {
     if (window.confirm('Are you sure you want to delete your account? This action cannot be undone.')) {
       alert('Account deleted.');
-      // Redirect to home or login page
+      /*axios.delete('https://api.example.com/user-data').then(() => {
+        Cookie.remove("signed_in_user");
+        redirect("/");
+        window.location.reload();
+      });*/
     }
   };
 
