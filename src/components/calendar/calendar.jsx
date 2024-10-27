@@ -16,13 +16,24 @@ function addDays(date, days) {
     return newDate;
 }
 
-const filters = ["#0000FF", "#FF0000", "#008000", "#999900", "#FFA500", "#800080", "#BB909B", "#A52A2A", "#FF00FF", "#808080"];
-
+const filters = [
+    '#1abc9c', 
+    '#2ecc71', 
+    '#3498db', 
+    '#9b59b6', 
+    '#f1c40f', 
+    '#e67e22', 
+    '#e74c3c', 
+    '#34495e', 
+    '#95a5a6', 
+    '#7f8c8d', 
+  ];
+  
 const tmpdata = [
-    { "task_name": "overflow: hidden;", "description": "neke neke", "color": "#FF0000", "start_time": "2024-10-22T14:00:00", "end_time": "2024-10-22T16:00:00" },
-    { "task_name": "task2", "description": "neke neke", "color": "#FF00FF", "start_time": "2024-10-22T14:00:00", "end_time": "2024-10-23T16:00:00" },
-    { "task_name": "task3", "description": "neke neke", "color": "#008000", "start_time": "2024-10-23T18:00:00", "end_time": "2024-10-24T20:00:00" },
-    { "task_name": "task4", "description": "neke neke", "color": "#808080", "start_time": "2024-10-24T22:00:00", "end_time": "2024-10-25T23:00:00" }
+    { "task_name": "overflow: hidden;", "description": "neke neke", "color": '#e74c3c', "start_time": "2024-10-22T14:00:00", "end_time": "2024-10-22T16:00:00" },
+    { "task_name": "task2", "description": "neke neke", "color": '#9b59b6', "start_time": "2024-10-22T14:00:00", "end_time": "2024-10-23T16:00:00" },
+    { "task_name": "task3", "description": "neke neke", "color": "#2ecc71", "start_time": "2024-10-23T18:00:00", "end_time": "2024-10-24T20:00:00" },
+    { "task_name": "task4", "description": "neke neke", "color": "#7f8c8d", "start_time": "2024-10-24T22:00:00", "end_time": "2024-10-25T23:00:00" }
 ];
 
 

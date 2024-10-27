@@ -2,31 +2,46 @@ import React, { useState } from 'react';
 import './todoList.css';
 
 function TodoList() {
-  // State to hold tasks for each category
-  const [tasks, setTasks] = useState({
-    daily: [],
-    weekly: [],
-    monthly: [],
-  });
+  const [tasks, setTasks] = useState([]);
 
-  // State to manage the visibility of the add task modal
   const [showModal, setShowModal] = useState(false);
-  const [currentCategory, setCurrentCategory] = useState('');
   const [newTask, setNewTask] = useState({
     name: '',
     urgent: false,
+    color: '#3498db', // Default color
+    startDateTime: '', // Start date and time as a string
+    endDateTime: '',   // End date and time as a string
   });
 
+  // Updated color scheme
+  const filters = [
+    '#1abc9c', 
+    '#2ecc71', 
+    '#3498db', 
+    '#9b59b6', 
+    '#f1c40f', 
+    '#e67e22', 
+    '#e74c3c', 
+    '#34495e',
+    '#95a5a6', 
+    '#7f8c8d', 
+  ];
+
   // Handle opening the modal
-  const handleAddTask = (category) => {
-    setCurrentCategory(category);
+  const handleAddTask = () => {
     setShowModal(true);
   };
 
   // Handle closing the modal
   const handleCloseModal = () => {
     setShowModal(false);
-    setNewTask({ name: '', urgent: false });
+    setNewTask({
+      name: '',
+      urgent: false,
+      color: '#3498db',
+      startDateTime: '',
+      endDateTime: '',
+    });
   };
 
   // Handle input changes in the modal
@@ -40,25 +55,41 @@ function TodoList() {
 
   // Handle submitting the new task
   const handleSubmit = (e) => {
+    e.preventDefault(); 
     if (newTask.name.trim() === '') return;
 
-    setTasks((prevTasks) => ({
-      ...prevTasks,
-      [currentCategory]: [...prevTasks[currentCategory], newTask],
-    }));
-    //axios.post('http://localhost:5551/todos', newTask);
+    const startDateTime = new Date(newTask.startDateTime);
+    const endDateTime = new Date(newTask.endDateTime);
+
+    if (endDateTime < startDateTime) {
+      alert('End date and time cannot be before start date and time.');
+      return;
+    }
+
+    setTasks((prevTasks) => [...prevTasks, newTask]);
+
     // Close the modal and reset newTask
     handleCloseModal();
   };
 
-  // Render tasks for a category
-  const renderTasks = (category) => {
-    return tasks[category].map((task, index) => (
-      <li
-        key={index}
-        className={`task-item ${task.urgent ? 'urgent' : ''}`}
-      >
-        {task.name}
+  // Render tasks
+  const renderTasks = () => {
+    return tasks.map((task, index) => (
+      <li key={index} className="task-item">
+        <div className="task-content">
+          <div
+            className="color-circle"
+            style={{ backgroundColor: task.color }}
+          ></div>
+          <span className={`task-name ${task.urgent ? 'urgent' : ''}`}>
+            {task.name}
+          </span>
+          <span className="task-date">
+            {/* Display start date and end date with time */}
+            {new Date(task.startDateTime).toLocaleString('en-GB')} -{' '}
+            {new Date(task.endDateTime).toLocaleString('en-GB')}
+          </span>
+        </div>
       </li>
     ));
   };
@@ -67,26 +98,13 @@ function TodoList() {
     <div className="page-background">
       <div className="todo-container">
         <h1>My Todos</h1>
-        <div className="todo-lists">
-          {['daily', 'weekly', 'monthly'].map((category) => (
-            <div
-              key={category}
-              className="todo-list"
-              onMouseEnter={() => {}}
-              onMouseLeave={() => {}}
-            >
-              <div className="todo-header">
-                <h2>{category.charAt(0).toUpperCase() + category.slice(1)}</h2>
-                <button
-                  className="add-task-button"
-                  onClick={() => handleAddTask(category)}
-                >
-                  +
-                </button>
-              </div>
-              <ul>{renderTasks(category)}</ul>
-            </div>
-          ))}
+        <div className="todo-list">
+          <div className="todo-header">
+            <button className="add-task-button" onClick={handleAddTask}>
+              +
+            </button>
+          </div>
+          <ul>{renderTasks()}</ul>
         </div>
       </div>
 
@@ -96,8 +114,9 @@ function TodoList() {
             className="modal-content"
             onClick={(e) => e.stopPropagation()}
           >
-            <h2>Add Task to {currentCategory.charAt(0).toUpperCase() + currentCategory.slice(1)}</h2>
-            <div>
+            <h2>Add New Task</h2>
+            <form onSubmit={handleSubmit}>
+              {/* Task Name */}
               <div className="form-group">
                 <label htmlFor="taskName">Task Name:</label>
                 <input
@@ -109,6 +128,54 @@ function TodoList() {
                   required
                 />
               </div>
+
+              {/* Color Selection */}
+              <div className="form-group">
+                <label>Select Color:</label>
+                <div className="color-options">
+                  {filters.map((color, index) => (
+                    <div
+                      key={index}
+                      className={`color-circle ${
+                        newTask.color === color ? 'selected' : ''
+                      }`}
+                      style={{ backgroundColor: color }}
+                      onClick={() =>
+                        setNewTask((prevTask) => ({ ...prevTask, color }))
+                      }
+                    />
+                  ))}
+                </div>
+              </div>
+
+              {/* Start Date and Time */}
+              <div className="form-group">
+                <label htmlFor="startDateTime">Start Date and Time:</label>
+                <input
+                  type="datetime-local"
+                  id="startDateTime"
+                  name="startDateTime"
+                  value={newTask.startDateTime}
+                  onChange={handleInputChange}
+                  required
+                />
+              </div>
+
+              {/* End Date and Time */}
+              <div className="form-group">
+                <label htmlFor="endDateTime">End Date and Time:</label>
+                <input
+                  type="datetime-local"
+                  id="endDateTime"
+                  name="endDateTime"
+                  value={newTask.endDateTime}
+                  onChange={handleInputChange}
+                  required
+                  min={newTask.startDateTime} // Ensure end datetime is after start datetime
+                />
+              </div>
+
+              {/* Urgent Checkbox */}
               <div className="form-group checkbox-group">
                 <label>
                   <input
@@ -120,8 +187,10 @@ function TodoList() {
                   Mark as urgent
                 </label>
               </div>
+
+              {/* Buttons */}
               <div className="modal-buttons">
-                <button type="submit" className="submit-button" onClick={handleSubmit}>
+                <button type="submit" className="submit-button">
                   Add Task
                 </button>
                 <button
@@ -132,7 +201,7 @@ function TodoList() {
                   Cancel
                 </button>
               </div>
-            </div>
+            </form>
           </div>
         </div>
       )}

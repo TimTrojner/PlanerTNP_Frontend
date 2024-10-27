@@ -7,8 +7,8 @@
 }
 
 .page-background {
-    background-image: url('/src/src/bg2.jpg');
-    background-size: cover;
+  background-image: url('/src/src/bg2.jpg');
+  background-size: cover;
   background-position: center;
   min-height: 100vh;
   background-repeat: no-repeat;
@@ -17,7 +17,7 @@
 }
 
 .todo-container {
-  max-width: 1200px;
+  max-width: 1400px; 
   margin: 0 auto;
   color: #333;
 }
@@ -28,31 +28,18 @@
   color: #2c3e50;
 }
 
-.todo-lists {
-  display: flex;
-  justify-content: space-between;
-  flex-wrap: wrap;
-  gap: 20px;
-}
-
 .todo-list {
   background-color: rgba(245, 245, 245, 0.9);
   border-radius: 15px;
   padding: 20px;
-  flex: 1;
-  min-width: 300px;
   position: relative;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 .todo-header {
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-end;
   align-items: center;
-}
-
-.todo-header h2 {
-  color: #2c3e50;
 }
 
 .add-task-button {
@@ -71,22 +58,52 @@
   background-color: #2980b9;
 }
 
-.task-item {
+ul {
   list-style: none;
+  margin-top: 20px;
+}
+
+.task-item {
   padding: 10px;
   border-bottom: 1px solid #ddd;
+  border-radius: 5px;
+  margin-bottom: 10px;
+  color: #333;
 }
 
 .task-item:last-child {
   border-bottom: none;
 }
 
-.task-item.urgent {
-  color: #e74c3c;
+.task-content {
+  display: flex;
+  align-items: center;
+}
+
+.color-circle {
+  width: 15px;
+  height: 15px;
+  border-radius: 50%;
+  margin-right: 10px;
+}
+
+.task-name {
+  margin-right: auto;
+}
+
+.task-name.urgent {
+  color: #e74c3c; /* Red color for urgent tasks */
   font-weight: bold;
 }
 
-/* Modal Styles */
+.task-date {
+  font-size: 0.9em;
+  color: #555;
+  margin-left: 10px;
+  white-space: nowrap; /* Prevent the date from wrapping */
+}
+
+
 .modal-overlay {
   position: fixed;
   top: 0;
@@ -123,12 +140,23 @@
   color: #555;
 }
 
-.form-group input[type="text"] {
+.form-group input[type="text"],
+.form-group input[type="date"] {
   width: 100%;
   padding: 10px;
   border: 2px solid #ddd;
   border-radius: 10px;
   background-color: #fff;
+}
+
+.color-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+
+.color-circle.selected {
+  border: 2px solid #000;
 }
 
 .checkbox-group {
