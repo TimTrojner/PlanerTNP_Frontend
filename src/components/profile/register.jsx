@@ -23,7 +23,7 @@ function Register() {
   }, []);
 
   const handleSubmit = async (e) => {
-    e.preventDefault(); 
+    e.preventDefault();
 
     const hashedPassword = sha256(password).toString();
     const data = {
@@ -32,21 +32,18 @@ function Register() {
       Password: hashedPassword
     };
 
-    try {
-      const response = await axios.post(`${env.api}/users/register`, data, {
-        headers: {
-          'Content-Type': 'application/json'
-        }
-      });
-      if (response && response.status === 200) {
-        Cookie.set("signed_in_user", response.data);
-        navigate("/");
-        window.location.reload();
+    axios.post(`${env.api}/users/register`, data, {
+      headers: {
+        'Content-Type': 'application/json'
       }
-    } catch (error) {
+    }).then((response) => {
+      Cookie.set("signed_in_user", JSON.stringify(response.data));
+      navigate("/");
+      window.location.reload();
+    }).catch((error) => {
       console.log('Error:', error);
-      alert('Registration failed. Username or email may already exist.');
-    }
+      alert('Username exists.');
+    });
   };
 
   const handleGoogleLogin = async (googleData) => {
@@ -115,7 +112,6 @@ function Register() {
           onFailure={handleGoogleLogin}
           cookiePolicy={'single_host_origin'}
         />
-
 
         <div className="terms">
           By clicking Register, you agree to our <strong>Terms of Service</strong> and <strong>Privacy Policy</strong>.

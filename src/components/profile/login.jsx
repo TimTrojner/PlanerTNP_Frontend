@@ -22,20 +22,18 @@ function Login() {
       Password: hashedPassword
     };
 
-    try {
-      const response = await axios.post(`${env.api}/users/login`, data, {
-        headers: {
-          'Content-Type': 'application/json'
-        }
-      });
-      if (response && response.status === 200) {
-        Cookie.set("signed_in_user", response.data);
-        navigate("/");
-        window.location.reload();
+    axios.post(`${env.api}/users/login`, data, {
+      headers: {
+        'Content-Type': 'application/json'
       }
-    } catch (error) {
-      alert('Wrong email or password');
-    }
+    }).then((response) => {
+      Cookie.set("signed_in_user", JSON.stringify(response.data));
+      navigate("/");
+      window.location.reload();
+    }).catch((error) => {
+      alert("Invalid email or password");
+      console.log(error);
+    });
   };
 
   const handleGoogleLogin = async (googleData) => {
@@ -68,31 +66,31 @@ function Login() {
 
   return (
     <div className="login-background">
-    <div className="login-container">
-      <h1>Login</h1>
-      <div className="login-form">
-        <div className="form-group">
-          <label htmlFor="email">Email:</label>
-          <input type="email" id="email" value={email} onChange={(e) => setEmail(e.target.value)} required />
-        </div>
-        <div className="form-group">
-          <label htmlFor="password">Password:</label>
-          <input type="password" id="password" value={password} onChange={(e) => setPassword(e.target.value)} required />
-        </div>
-        <button type="submit" className="login-button" onClick={handleSubmit}>Login</button>
-        <div className="separator">Do you want to continue with Google?</div>
-        <GoogleLogin
-          clientId="YOUR_GOOGLE_CLIENT_ID"
-          buttonText="Login with Google"
-          onSuccess={handleGoogleLogin}
-          onFailure={handleGoogleLogin}
-          cookiePolicy={'single_host_origin'}
-        />
-        <div className="terms">
-          By clicking continue, you agree to our <strong>Terms of Service</strong> and <strong>Privacy policy</strong>
+      <div className="login-container">
+        <h1>Login</h1>
+        <div className="login-form">
+          <div className="form-group">
+            <label htmlFor="email">Email:</label>
+            <input type="email" id="email" value={email} onChange={(e) => setEmail(e.target.value)} required />
+          </div>
+          <div className="form-group">
+            <label htmlFor="password">Password:</label>
+            <input type="password" id="password" value={password} onChange={(e) => setPassword(e.target.value)} required />
+          </div>
+          <button type="submit" className="login-button" onClick={handleSubmit}>Login</button>
+          <div className="separator">Do you want to continue with Google?</div>
+          <GoogleLogin
+            clientId="YOUR_GOOGLE_CLIENT_ID"
+            buttonText="Login with Google"
+            onSuccess={handleGoogleLogin}
+            onFailure={handleGoogleLogin}
+            cookiePolicy={'single_host_origin'}
+          />
+          <div className="terms">
+            By clicking continue, you agree to our <strong>Terms of Service</strong> and <strong>Privacy policy</strong>
+          </div>
         </div>
       </div>
-    </div>
     </div>
 
   );

@@ -1,4 +1,7 @@
-import React, { useState } from 'react';
+import axios from 'axios';
+import Cookie from "js-cookie";
+import React, { useEffect, useState } from 'react';
+import env from "../../env.json";
 import './todoList.css';
 
 function TodoList() {
@@ -15,17 +18,26 @@ function TodoList() {
 
   // Updated color scheme
   const filters = [
-    '#1abc9c', 
-    '#2ecc71', 
-    '#3498db', 
-    '#9b59b6', 
-    '#f1c40f', 
-    '#e67e22', 
-    '#e74c3c', 
+    '#1abc9c',
+    '#2ecc71',
+    '#3498db',
+    '#9b59b6',
+    '#f1c40f',
+    '#e67e22',
+    '#e74c3c',
     '#34495e',
-    '#95a5a6', 
-    '#7f8c8d', 
+    '#95a5a6',
+    '#7f8c8d',
   ];
+
+  useEffect(() => {
+    const user = JSON.parse(Cookie.get("signed_in_user"));
+    axios.get(`${env.api}/tasks/${user.username}`).then((response) => {
+      setTasks(response.data);
+    }).catch((error) => {
+      console.log(error);
+    });
+  }, [showModal]);
 
   // Handle opening the modal
   const handleAddTask = () => {
@@ -55,7 +67,7 @@ function TodoList() {
 
   // Handle submitting the new task
   const handleSubmit = (e) => {
-    e.preventDefault(); 
+    e.preventDefault();
     if (newTask.name.trim() === '') return;
 
     const startDateTime = new Date(newTask.startDateTime);
@@ -66,10 +78,16 @@ function TodoList() {
       return;
     }
 
-    setTasks((prevTasks) => [...prevTasks, newTask]);
-
-    // Close the modal and reset newTask
-    handleCloseModal();
+    const user = JSON.parse(Cookie.get("signed_in_user"));
+    axios.post(`${env.api}/add-task/${user.username}`, newTask, {
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    }).then((response) => {
+      handleCloseModal();
+    }).catch((error) => {
+      console.log(error);
+    });
   };
 
   // Render tasks
@@ -136,9 +154,8 @@ function TodoList() {
                   {filters.map((color, index) => (
                     <div
                       key={index}
-                      className={`color-circle ${
-                        newTask.color === color ? 'selected' : ''
-                      }`}
+                      className={`color-circle ${newTask.color === color ? 'selected' : ''
+                        }`}
                       style={{ backgroundColor: color }}
                       onClick={() =>
                         setNewTask((prevTask) => ({ ...prevTask, color }))

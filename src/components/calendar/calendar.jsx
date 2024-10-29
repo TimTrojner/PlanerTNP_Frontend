@@ -1,7 +1,8 @@
+import axios from 'axios';
 import Cookie from "js-cookie";
 import { useEffect, useRef, useState } from "react";
-import { useLocation } from "react-router-dom";
 import '../../App.css';
+import env from "../../env.json";
 import './calendar.css';
 
 function getStartOfWeek(date) {
@@ -17,18 +18,18 @@ function addDays(date, days) {
 }
 
 const filters = [
-    '#1abc9c', 
-    '#2ecc71', 
-    '#3498db', 
-    '#9b59b6', 
-    '#f1c40f', 
-    '#e67e22', 
-    '#e74c3c', 
-    '#34495e', 
-    '#95a5a6', 
-    '#7f8c8d', 
-  ];
-  
+    '#1abc9c',
+    '#2ecc71',
+    '#3498db',
+    '#9b59b6',
+    '#f1c40f',
+    '#e67e22',
+    '#e74c3c',
+    '#34495e',
+    '#95a5a6',
+    '#7f8c8d',
+];
+
 const tmpdata = [
     { "task_name": "overflow: hidden;", "description": "neke neke", "color": '#e74c3c', "start_time": "2024-10-22T14:00:00", "end_time": "2024-10-22T16:00:00" },
     { "task_name": "task2", "description": "neke neke", "color": '#9b59b6', "start_time": "2024-10-22T14:00:00", "end_time": "2024-10-23T16:00:00" },
@@ -38,7 +39,6 @@ const tmpdata = [
 
 
 function Calendar() {
-    const location = useLocation();
     const [signedIn, setSignedIn] = useState(false);
     const [currentWeek, setCurrentWeek] = useState(getStartOfWeek(new Date()));
     const [selectedFilter, setSelectedFilter] = useState(null);
@@ -47,12 +47,14 @@ function Calendar() {
 
     useEffect(() => {
         if (Cookie.get("signed_in_user") !== undefined) {
-            setSignedIn(Cookie.get("signed_in_user"));
-            /*axios.get("http://localhost:5551/tasks").then((response) => {
+            setSignedIn(JSON.parse(Cookie.get("signed_in_user")));
+            const data = JSON.parse(Cookie.get("signed_in_user"));
+            axios.get(`${env.api}/tasks/${data.username}`).then((response) => {
                 setTasks(response.data);
-            });*/
-            setTasks(tmpdata);
-
+            }).catch((error) => {
+                console.log(error);
+            });
+            //setTasks(tmpdata);
         } else {
             setSignedIn(false);
         }
