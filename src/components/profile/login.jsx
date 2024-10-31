@@ -22,7 +22,7 @@ function Login() {
       Password: hashedPassword
     };
 
-    axios.post(`${env.api}/users/login`, data, {
+    axios.post(`${env.api}/auth/login`, data, {
       headers: {
         'Content-Type': 'application/json'
       }

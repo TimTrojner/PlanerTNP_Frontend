@@ -32,7 +32,7 @@ function Register() {
       Password: hashedPassword
     };
 
-    axios.post(`${env.api}/users/register`, data, {
+    axios.post(`${env.api}/auth/register`, data, {
       headers: {
         'Content-Type': 'application/json'
       }

@@ -9,16 +9,16 @@ function Profile() {
   const navigate = useNavigate();
   // Mock user data
   const [userData, setUserData] = useState({
-    firstName: '',
-    lastName: '',
-    username: '',
-    email: '',
-    country: '',
-    phoneNumber: '',
-    location: '',
-    birthday: {
-      day: '',
-      month: '',
+    FirstName: '',
+    LastName: '',
+    Username: '',
+    Email: '',
+    Country: '',
+    PhoneNumber: '',
+    Location: '',
+    Birthday: {
+      Day: '',
+      Month: '',
     },
   });
 
@@ -26,20 +26,35 @@ function Profile() {
   useEffect(() => {
     const user = JSON.parse(Cookie.get('signed_in_user'));
 
-    axios.get(`${env.api}/user-data/${user.username}`).then((response) => {
-      setUserData(response.data);
+    axios.get(`${env.api}/auth/user/${user._id}/get-profile`).then((response) => {
+      console.log("USER:", response.data);
+      // Map backend fields with capital letters to lowercase fields in userData state
+      setUserData((prevData) => ({
+        ...prevData,
+        Email: response.data.Email || "",       // Map "Email" to "email"
+        Username: response.data.Username || "", // Map "Username" to "Username"
+        FirstName: response.data.FirstName || "",
+        LastName: response.data.LastName || "",
+        Country: response.data.Country || "",
+        PhoneNumber: response.data.PhoneNumber || "",
+        Location: response.data.Location || "",
+        Birthday: {
+          Day: response.data.Birthday?.Day || "",
+          Month: response.data.Birthday?.Month || "",
+        },
+      }));
     }).catch((error) => {
       console.log('Error:', error);
     });
 
     /*    const mockData = {
-          firstName: 'Name',
-          lastName: 'Surname',
-          username: 'username',
+          FirstName: 'Name',
+          LastName: 'Surname',
+          Username: 'Username',
           email: 'name123@example.com',
-          country: 'Slovenija',
-          phoneNumber: '+1 123 123 123 ',
-          location: 'Maribor',
+          Country: 'Slovenija',
+          PhoneNumber: '+1 123 123 123 ',
+          Location: 'Maribor',
           birthday: {
             day: '1',
             month: 'January',
@@ -50,11 +65,12 @@ function Profile() {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    if (name === 'day' || name === 'month') {
+    console.log(e.target)
+    if (name === 'Day' || name === 'Month') {
       setUserData((prevData) => ({
         ...prevData,
-        birthday: {
-          ...prevData.birthday,
+        Birthday: {
+          ...prevData.Birthday,
           [name]: value,
         },
       }));
@@ -68,7 +84,7 @@ function Profile() {
 
   const handleSaveChanges = () => {
     const user = JSON.parse(Cookie.get('signed_in_user'));
-    axios.put(`${env.api}/update-user-account/${user.username}`, userData).then(() => {
+    axios.put(`${env.api}/auth/user/${user._id}/update-data`, userData).then(() => {
       alert('Changes saved!');
     }).catch((error) => {
       console.log('Error:', error);
@@ -78,11 +94,11 @@ function Profile() {
   const handleDeleteAccount = () => {
     if (window.confirm('Are you sure you want to delete your account? This action cannot be undone.')) {
       const user = JSON.parse(Cookie.get('signed_in_user'));
-      axios.delete(`${env.api}/delete-user-account/${user.username}`).then(() => {
+      axios.delete(`${env.api}/auth/user/${user._id}`).then(() => {
         Cookie.remove("signed_in_user");
         alert('Account deleted.');
         navigate("/");
-        window.location.reload();
+        window.Location.reload();
       }).catch((error) => {
         console.log('Error:', error);
       });
@@ -98,8 +114,8 @@ function Profile() {
             <label>First Name:</label>
             <input
               type="text"
-              name="firstName"
-              value={userData.firstName}
+              name="FirstName"
+              value={userData.FirstName}
               onChange={handleChange}
               placeholder="First Name"
             />
@@ -108,8 +124,8 @@ function Profile() {
             <label>Last Name:</label>
             <input
               type="text"
-              name="lastName"
-              value={userData.lastName}
+              name="LastName"
+              value={userData.LastName}
               onChange={handleChange}
               placeholder="Last Name"
             />
@@ -118,8 +134,8 @@ function Profile() {
             <label>Username:</label>
             <input
               type="text"
-              name="username"
-              value={userData.username}
+              name="Username"
+              value={userData.Username}
               onChange={handleChange}
               placeholder="Username"
             />
@@ -128,8 +144,8 @@ function Profile() {
             <label>Email:</label>
             <input
               type="email"
-              name="email"
-              value={userData.email}
+              name="Email"
+              value={userData.Email}
               onChange={handleChange}
               placeholder="Email"
             />
@@ -138,8 +154,8 @@ function Profile() {
             <label>Country:</label>
             <input
               type="text"
-              name="country"
-              value={userData.country}
+              name="Country"
+              value={userData.Country}
               onChange={handleChange}
               placeholder="Country"
             />
@@ -148,8 +164,8 @@ function Profile() {
             <label>Phone Number:</label>
             <input
               type="text"
-              name="phoneNumber"
-              value={userData.phoneNumber}
+              name="PhoneNumber"
+              value={userData.PhoneNumber}
               onChange={handleChange}
               placeholder="+00 000 000 000"
             />
@@ -158,25 +174,25 @@ function Profile() {
             <label>Location:</label>
             <input
               type="text"
-              name="location"
-              value={userData.location}
+              name="Location"
+              value={userData.Location}
               onChange={handleChange}
-              placeholder="Enter your location"
+              placeholder="Enter your Location"
             />
           </div>
           <div className="form-group birthday-group">
             <label>Birthday:</label>
             <input
               type="text"
-              name="day"
-              value={userData.birthday.day}
+              name="Day"
+              value={userData.Birthday.Day}
               onChange={handleChange}
               placeholder="Day"
             />
             <input
               type="text"
-              name="month"
-              value={userData.birthday.month}
+              name="Month"
+              value={userData.Birthday.Month}
               onChange={handleChange}
               placeholder="Month"
             />
