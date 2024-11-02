@@ -42,15 +42,16 @@ function Calendar() {
     const [signedIn, setSignedIn] = useState(false);
     const [currentWeek, setCurrentWeek] = useState(getStartOfWeek(new Date()));
     const [selectedFilter, setSelectedFilter] = useState(null);
-    const [tasks, setTasks] = useState(tmpdata);
+    const [tasks, setTasks] = useState([]);
     const fileInputRef = useRef(null);
 
     useEffect(() => {
         if (Cookie.get("signed_in_user") !== undefined) {
             setSignedIn(JSON.parse(Cookie.get("signed_in_user")));
-            const data = JSON.parse(Cookie.get("signed_in_user"));
-            axios.get(`${env.api}/tasks/${data.username}`).then((response) => {
-                setTasks(response.data);
+            const user = JSON.parse(Cookie.get("signed_in_user"));
+            axios.get(`${env.api}/task/user/${user._id}/tasks`).then((response) => {
+                console.log(response.data.tasks);
+                setTasks(response.data.tasks);
             }).catch((error) => {
                 console.log(error);
             });
@@ -87,36 +88,38 @@ function Calendar() {
     };
 
     const filteredTasks = tasks.filter(task => {
-        const startDate = new Date(task.start_time);
-        const endDate = new Date(task.end_time);
-        return weekDays.some(day => isSameDay(day, startDate) || isSameDay(day, endDate));
+        const startDate = new Date(task.startDateTime);
+        const endDate = new Date(task.endDateTime);
+    
+        return weekDays.some(day => (
+            (startDate <= day && endDate >= day) // Checks if the task spans across the week
+        ));
     });
+    
 
     const renderTaskInTimeSlot = (day, slot) => {
         const dayTasks = filteredTasks.filter(task => {
-            const taskStart = new Date(task.start_time);
-            const taskEnd = new Date(task.end_time);
+            const taskStart = new Date(task.startDateTime);
+            const taskEnd = new Date(task.endDateTime);
             const slotHour = parseInt(slot.split(":")[0]);
             const slotMinutes = parseInt(slot.split(":")[1]);
-
-            if (!isSameDay(taskStart, day) && !isSameDay(taskEnd, day)) {
-                return false;
-            }
-
+    
             const slotTime = new Date(day);
             slotTime.setHours(slotHour, slotMinutes, 0, 0);
-
-            return taskStart <= slotTime && taskEnd > slotTime;
+    
+            // Adjust to include entire range on the given day
+            return (taskStart <= slotTime && taskEnd > slotTime);
         });
-
+    
         return dayTasks.map((task, index) => (
             selectedFilter !== null && task.color !== filters[selectedFilter] ? null : (
                 <p key={index} className="task-ribbon" style={{ backgroundColor: task.color }}>
-                    <b>{/*⠀*/task.task_name}</b>
+                    <b>{/*⠀*/task.name}</b>
                 </p>
             )
         ));
     };
+    
 
     const handleFileImport = (event) => {
         const file = event.target.files[0];

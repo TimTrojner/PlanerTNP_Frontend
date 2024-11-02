@@ -32,8 +32,8 @@ function TodoList() {
 
   useEffect(() => {
     const user = JSON.parse(Cookie.get("signed_in_user"));
-    axios.get(`${env.api}/tasks/${user.username}`).then((response) => {
-      setTasks(response.data);
+    axios.get(`${env.api}/task/user/${user._id}/tasks`).then((response) => {
+      setTasks(response.data.tasks);
     }).catch((error) => {
       console.log(error);
     });
@@ -79,7 +79,7 @@ function TodoList() {
     }
 
     const user = JSON.parse(Cookie.get("signed_in_user"));
-    axios.post(`${env.api}/add-task/${user.username}`, newTask, {
+    axios.post(`${env.api}/task/user/${user._id}/tasks`, newTask, {
       headers: {
         'Content-Type': 'application/json'
       }
