@@ -43,23 +43,47 @@ function Calendar() {
     const [currentWeek, setCurrentWeek] = useState(getStartOfWeek(new Date()));
     const [selectedFilter, setSelectedFilter] = useState(null);
     const [tasks, setTasks] = useState([]);
+    const [schedules, setSchedules] = useState([]);
     const fileInputRef = useRef(null);
 
     useEffect(() => {
         if (Cookie.get("signed_in_user") !== undefined) {
-            setSignedIn(JSON.parse(Cookie.get("signed_in_user")));
             const user = JSON.parse(Cookie.get("signed_in_user"));
-            axios.get(`${env.api}/task/user/${user._id}/tasks`).then((response) => {
-                console.log(response.data.tasks);
-                setTasks(response.data.tasks);
-            }).catch((error) => {
-                console.log(error);
+            setSignedIn(user);
+    
+            // Fetch tasks and schedules in parallel
+            Promise.all([
+                axios.get(`${env.api}/task/user/${user._id}/tasks`),
+                axios.get(`${env.api}/schedule/schedules/all`)
+            ])
+            .then(([taskResponse, scheduleResponse]) => {
+                const userTasks = taskResponse.data.tasks;
+                const schedules = scheduleResponse.data.tasks;  // Assuming schedules are in 'tasks'
+    
+                // Map over schedules to match task properties
+                const formattedSchedules = schedules.map(schedule => ({
+                    _id: user._id,
+                    name: schedule.name,
+                    color: schedule.color,
+                    startDateTime: schedule.start_time,  // Rename to match tasks' format
+                    endDateTime: schedule.end_time       // Rename to match tasks' format
+                }));
+    
+                // Combine user tasks and formatted schedules into a single array
+                const combinedTasks = [...userTasks, ...formattedSchedules];
+                setTasks(combinedTasks);
+    
+                // Log the combined tasks array
+                console.log("Fetched and combined tasks:", combinedTasks);
+            })
+            .catch((error) => {
+                console.error("Error fetching tasks or schedules:", error);
             });
-            //setTasks(tmpdata);
         } else {
             setSignedIn(false);
         }
     }, []);
+    
 
     const handlePrevWeek = () => {
         setCurrentWeek(addDays(currentWeek, -7));
@@ -96,9 +120,10 @@ function Calendar() {
         ));
     });
     
+    
 
     const renderTaskInTimeSlot = (day, slot) => {
-        const dayTasks = filteredTasks.filter(task => {
+        const dayTasks = tasks.filter(task => {
             const taskStart = new Date(task.startDateTime);
             const taskEnd = new Date(task.endDateTime);
             const slotHour = parseInt(slot.split(":")[0]);
@@ -106,14 +131,13 @@ function Calendar() {
     
             const slotTime = new Date(day);
             slotTime.setHours(slotHour, slotMinutes, 0, 0);
-    
             // Adjust to include entire range on the given day
             return (taskStart <= slotTime && taskEnd > slotTime);
         });
     
         return dayTasks.map((task, index) => (
             selectedFilter !== null && task.color !== filters[selectedFilter] ? null : (
-                <p key={index} className="task-ribbon" style={{ backgroundColor: task.color }}>
+                <p key={index} className="task-ribbon" style={{ backgroundColor: "#1abc9c" }}>
                     <b>{/*⠀*/task.name}</b>
                 </p>
             )
