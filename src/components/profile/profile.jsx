@@ -24,29 +24,31 @@ function Profile() {
 
   // Load mock data when the component mounts
   useEffect(() => {
-    const user = JSON.parse(Cookie.get('signed_in_user'));
+    console.log(Cookie.get("signed_in_user"));
+    if (Cookie.get("signed_in_user") !== undefined) {
+      const user = JSON.parse(Cookie.get('signed_in_user'));
 
-    axios.get(`${env.api}/auth/user/${user._id}/get-profile`).then((response) => {
-      console.log("USER:", response.data);
-      // Map backend fields with capital letters to lowercase fields in userData state
-      setUserData((prevData) => ({
-        ...prevData,
-        Email: response.data.Email || "",       // Map "Email" to "email"
-        Username: response.data.Username || "", // Map "Username" to "Username"
-        FirstName: response.data.FirstName || "",
-        LastName: response.data.LastName || "",
-        Country: response.data.Country || "",
-        PhoneNumber: response.data.PhoneNumber || "",
-        Location: response.data.Location || "",
-        Birthday: {
-          Day: response.data.Birthday?.Day || "",
-          Month: response.data.Birthday?.Month || "",
-        },
-      }));
-    }).catch((error) => {
-      console.log('Error:', error);
-    });
-
+      axios.get(`${env.api}/auth/user/${user._id}/get-profile`).then((response) => {
+        console.log("USER:", response.data);
+        // Map backend fields with capital letters to lowercase fields in userData state
+        setUserData((prevData) => ({
+          ...prevData,
+          Email: response.data.Email || "",       // Map "Email" to "email"
+          Username: response.data.Username || "", // Map "Username" to "Username"
+          FirstName: response.data.FirstName || "",
+          LastName: response.data.LastName || "",
+          Country: response.data.Country || "",
+          PhoneNumber: response.data.PhoneNumber || "",
+          Location: response.data.Location || "",
+          Birthday: {
+            Day: response.data.Birthday?.Day || "",
+            Month: response.data.Birthday?.Month || "",
+          },
+        }));
+      }).catch((error) => {
+        console.log('Error:', error);
+      });
+    }
     /*    const mockData = {
           FirstName: 'Name',
           LastName: 'Surname',

@@ -137,7 +137,7 @@ function Calendar() {
     
         return dayTasks.map((task, index) => (
             selectedFilter !== null && task.color !== filters[selectedFilter] ? null : (
-                <p key={index} className="task-ribbon" style={{ backgroundColor: "#1abc9c" }}>
+                <p key={index} className="task-ribbon" style={{ backgroundColor: task.color }}>
                     <b>{/*⠀*/task.name}</b>
                 </p>
             )

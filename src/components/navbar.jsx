@@ -1,6 +1,6 @@
 import Cookie from "js-cookie";
 import { useEffect, useState } from "react";
-import { Link, redirect, useLocation } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import '../App.css';
 import './navbar.css';
 
@@ -18,8 +18,7 @@ function Navbar() {
 
     function logout() {
         Cookie.remove("signed_in_user");
-        redirect("/");
-        window.location.reload();
+        window.location.replace(`http://${window.location.host}/`);
     }
 
     return (
