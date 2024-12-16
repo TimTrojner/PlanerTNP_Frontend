@@ -30,7 +30,7 @@ function Profile() {
       const user = JSON.parse(Cookie.get('signed_in_user') as string)
 
       axios
-        .get(`${process.env.API}/auth/user/${user._id}/get-profile`)
+        .get(`${process.env.REACT_APP_API}/auth/user/${user._id}/get-profile`)
         .then((response) => {
           console.log('USER:', response.data)
           // Map backend fields with capital letters to lowercase fields in userData state

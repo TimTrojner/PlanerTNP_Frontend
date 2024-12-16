@@ -52,8 +52,8 @@ function Calendar() {
 
       // Fetch tasks and schedules in parallel
       Promise.all([
-        axios.get(`${process.env.API}/task/user/${user._id}/tasks`),
-        axios.get(`${process.env.API}/schedule/schedules/all`),
+        axios.get(`${process.env.REACT_APP_API}/task/user/${user._id}/tasks`),
+        axios.get(`${process.env.REACT_APP_API}/schedule/schedules/all`),
       ])
         .then(([taskResponse, scheduleResponse]) => {
           const userTasks = taskResponse.data.tasks

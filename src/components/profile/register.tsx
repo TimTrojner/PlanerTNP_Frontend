@@ -31,7 +31,7 @@ function Register() {
     }
 
     axios
-      .post(`${process.env.API}/auth/register`, data, {
+      .post(`${process.env.REACT_APP_API}/auth/register`, data, {
         headers: {
           'Content-Type': 'application/json',
         },
@@ -51,7 +51,7 @@ function Register() {
     const { tokenObj } = googleData
     try {
       const response = await axios.post(
-        `${process.env.API}/users/googleRegister`,
+        `${process.env.REACT_APP_API}/users/googleRegister`,
         {
           token: tokenObj.id_token,
         },

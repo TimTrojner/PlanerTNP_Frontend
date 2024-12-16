@@ -33,7 +33,7 @@ function TodoList() {
   useEffect(() => {
     const user = JSON.parse(Cookie.get('signed_in_user') as string)
     axios
-      .get(`${process.env.API}/task/user/${user._id}/tasks`)
+      .get(`${process.env.REACT_APP_API}/task/user/${user._id}/tasks`)
       .then((response) => {
         setTasks(response.data.tasks)
       })
@@ -85,11 +85,15 @@ function TodoList() {
 
     const user = JSON.parse(Cookie.get('signed_in_user') as string)
     axios
-      .post(`${process.env.API}/task/user/${user._id}/tasks`, newTask, {
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      })
+      .post(
+        `${process.env.REACT_APP_API}/task/user/${user._id}/tasks`,
+        newTask,
+        {
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        }
+      )
       .then((response) => {
         handleCloseModal()
       })

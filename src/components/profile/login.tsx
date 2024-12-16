@@ -19,7 +19,7 @@ function Login() {
     }
 
     axios
-      .post(`${process.env.API}/auth/login`, data, {
+      .post(`${process.env.REACT_APP_API}/auth/login`, data, {
         headers: {
           'Content-Type': 'application/json',
         },
@@ -39,7 +39,7 @@ function Login() {
     const { tokenObj } = googleData
     try {
       const response = await axios.post(
-        `${process.env.API}/users/googleLogin`,
+        `${process.env.REACT_APP_API}/users/googleLogin`,
         {
           token: tokenObj.id_token,
         },

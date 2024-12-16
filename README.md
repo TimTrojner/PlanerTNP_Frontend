@@ -86,7 +86,8 @@ You will need to have the following installed on your system:
 
 Create a .env file in the root of the backend project and fill in the variables with your values:
 ```
-FRONTEND_PORT=1234
+REACT_APP_API=http://localhost:1234
+REACT_APP_FRONTEND_PORT=8080
 ```
 
 Run `./setup_docker.sh` script.
