@@ -1,6 +1,6 @@
 {
-  "short_name": "React App",
-  "name": "Create React App Sample",
+  "short_name": "PlannerTNP",
+  "name": "PlannerTNP",
   "icons": [
     {
       "src": "favicon.ico",
@@ -18,8 +18,17 @@
       "sizes": "512x512"
     }
   ],
+  "screenshots": [
+    {
+      "src": "logo192.png",
+      "sizes": "1280x720",
+      "type": "image/png"
+    }
+  ],
   "start_url": ".",
+  "theme_color": "#8936FF",
+  "background_color": "#333333",
+  "id": "PlannerTNP",
   "display": "standalone",
-  "theme_color": "#000000",
-  "background_color": "#ffffff"
+  "description": "Planner gives you the ability to plan your day, week, month, or even year. It is a simple and easy-to-use planner that helps you organize your life."
 }
