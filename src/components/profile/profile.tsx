@@ -1,14 +1,14 @@
-import axios from 'axios';
-import Cookie from 'js-cookie';
-import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import env from "../../env.json";
-import './profile.css';
+import axios from 'axios'
+import Cookie from 'js-cookie'
+import React, { ChangeEvent, useEffect, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
+import './profile.css'
+import { User } from '../../src/types/user'
 
 function Profile() {
-  const navigate = useNavigate();
+  const navigate = useNavigate()
   // Mock user data
-  const [userData, setUserData] = useState({
+  const [userData, setUserData] = useState<User>({
     FirstName: '',
     LastName: '',
     Username: '',
@@ -20,53 +20,57 @@ function Profile() {
       Day: '',
       Month: '',
     },
-  });
+  })
 
   // Load mock data when the component mounts
   useEffect(() => {
-    console.log(Cookie.get("signed_in_user"));
-    if (Cookie.get("signed_in_user") !== undefined) {
-      const user = JSON.parse(Cookie.get('signed_in_user'));
+    console.log(Cookie.get('signed_in_user'))
 
-      axios.get(`${env.api}/auth/user/${user._id}/get-profile`).then((response) => {
-        console.log("USER:", response.data);
-        // Map backend fields with capital letters to lowercase fields in userData state
-        setUserData((prevData) => ({
-          ...prevData,
-          Email: response.data.Email || "",       // Map "Email" to "email"
-          Username: response.data.Username || "", // Map "Username" to "Username"
-          FirstName: response.data.FirstName || "",
-          LastName: response.data.LastName || "",
-          Country: response.data.Country || "",
-          PhoneNumber: response.data.PhoneNumber || "",
-          Location: response.data.Location || "",
-          Birthday: {
-            Day: response.data.Birthday?.Day || "",
-            Month: response.data.Birthday?.Month || "",
-          },
-        }));
-      }).catch((error) => {
-        console.log('Error:', error);
-      });
+    if (Cookie.get('signed_in_user') !== undefined) {
+      const user = JSON.parse(Cookie.get('signed_in_user') as string)
+
+      axios
+        .get(`${process.env.API}/auth/user/${user._id}/get-profile`)
+        .then((response) => {
+          console.log('USER:', response.data)
+          // Map backend fields with capital letters to lowercase fields in userData state
+          setUserData((prevData) => ({
+            ...prevData,
+            Email: response.data.Email || '', // Map "Email" to "email"
+            Username: response.data.Username || '', // Map "Username" to "Username"
+            FirstName: response.data.FirstName || '',
+            LastName: response.data.LastName || '',
+            Country: response.data.Country || '',
+            PhoneNumber: response.data.PhoneNumber || '',
+            Location: response.data.Location || '',
+            Birthday: {
+              Day: response.data.Birthday?.Day || '',
+              Month: response.data.Birthday?.Month || '',
+            },
+          }))
+        })
+        .catch((error) => {
+          console.log('Error:', error)
+        })
     }
     /*    const mockData = {
-          FirstName: 'Name',
-          LastName: 'Surname',
-          Username: 'Username',
-          email: 'name123@example.com',
-          Country: 'Slovenija',
-          PhoneNumber: '+1 123 123 123 ',
-          Location: 'Maribor',
-          birthday: {
-            day: '1',
-            month: 'January',
-          },
-        };
-        setUserData(mockData);*/
-  }, []);
+              FirstName: 'Name',
+              LastName: 'Surname',
+              Username: 'Username',
+              email: 'name123@example.com',
+              Country: 'Slovenija',
+              PhoneNumber: '+1 123 123 123 ',
+              Location: 'Maribor',
+              birthday: {
+                day: '1',
+                month: 'January',
+              },
+            };
+            setUserData(mockData);*/
+  }, [])
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
+  const handleChange = (e: ChangeEvent<HTMLInputElement> & HTMLElement) => {
+    const { name, value } = e.target
     console.log(e.target)
     if (name === 'Day' || name === 'Month') {
       setUserData((prevData) => ({
@@ -75,37 +79,47 @@ function Profile() {
           ...prevData.Birthday,
           [name]: value,
         },
-      }));
+      }))
     } else {
       setUserData((prevData) => ({
         ...prevData,
         [name]: value,
-      }));
+      }))
     }
-  };
+  }
 
   const handleSaveChanges = () => {
-    const user = JSON.parse(Cookie.get('signed_in_user'));
-    axios.put(`${env.api}/auth/user/${user._id}/update-data`, userData).then(() => {
-      alert('Changes saved!');
-    }).catch((error) => {
-      console.log('Error:', error);
-    });
-  };
+    const user = JSON.parse(Cookie.get('signed_in_user') as string)
+    axios
+      .put(`${process.env.API}/auth/user/${user._id}/update-data`, userData)
+      .then(() => {
+        alert('Changes saved!')
+      })
+      .catch((error) => {
+        console.log('Error:', error)
+      })
+  }
 
   const handleDeleteAccount = () => {
-    if (window.confirm('Are you sure you want to delete your account? This action cannot be undone.')) {
-      const user = JSON.parse(Cookie.get('signed_in_user'));
-      axios.delete(`${env.api}/auth/user/${user._id}`).then(() => {
-        Cookie.remove("signed_in_user");
-        alert('Account deleted.');
-        navigate("/");
-        window.Location.reload();
-      }).catch((error) => {
-        console.log('Error:', error);
-      });
+    if (
+      window.confirm(
+        'Are you sure you want to delete your account? This action cannot be undone.'
+      )
+    ) {
+      const user = JSON.parse(Cookie.get('signed_in_user') as string)
+      axios
+        .delete(`${process.env.API}/auth/user/${user._id}`)
+        .then(() => {
+          Cookie.remove('signed_in_user')
+          alert('Account deleted.')
+          navigate('/')
+          window.location.reload()
+        })
+        .catch((error) => {
+          console.log('Error:', error)
+        })
     }
-  };
+  }
 
   return (
     <div className="page-background">
@@ -199,24 +213,32 @@ function Profile() {
               placeholder="Month"
             />
           </div>
-          <button type="button" className="save-button" onClick={handleSaveChanges}>
+          <button
+            type="button"
+            className="save-button"
+            onClick={handleSaveChanges}
+          >
             Save Changes
           </button>
         </form>
         <div className="delete-account-section">
           <h2>Delete Account</h2>
           <p>
-            After deleting your account, you will lose all related information including tasks, events,
-            projects, notes, etc. You will not be able to recover it later, so think twice before doing
-            this.
+            After deleting your account, you will lose all related information
+            including tasks, events, projects, notes, etc. You will not be able
+            to recover it later, so think twice before doing this.
           </p>
-          <button type="button" className="delete-button" onClick={handleDeleteAccount}>
+          <button
+            type="button"
+            className="delete-button"
+            onClick={handleDeleteAccount}
+          >
             Delete My Account
           </button>
         </div>
       </div>
     </div>
-  );
+  )
 }
 
-export default Profile;
+export default Profile

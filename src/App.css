@@ -20,7 +20,7 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  font-size: calc(10px + 2vmin);
+  font-size: clamp(1rem, 2vmin, 2rem);
   color: white;
 }
 
@@ -42,8 +42,5 @@
   background-position: center;
   background-repeat: repeat; /* Changed from 'repeat' to 'repeat' */
   z-index: -1;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
+  inset: 0;
 }

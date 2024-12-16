@@ -1,20 +1,20 @@
-import axios from 'axios';
-import Cookie from "js-cookie";
-import React, { useEffect, useState } from 'react';
-import env from "../../env.json";
-import './todoList.css';
+import axios from 'axios'
+import Cookie from 'js-cookie'
+import React, { ChangeEvent, FormEvent, useEffect, useState } from 'react'
+import './todoList.css'
+import { type Task } from '../../src/types/task'
 
 function TodoList() {
-  const [tasks, setTasks] = useState([]);
+  const [tasks, setTasks] = useState<Task[]>([])
 
-  const [showModal, setShowModal] = useState(false);
-  const [newTask, setNewTask] = useState({
+  const [showModal, setShowModal] = useState(false)
+  const [newTask, setNewTask] = useState<Task>({
     name: '',
     urgent: false,
     color: '#3498db', // Default color
     startDateTime: '', // Start date and time as a string
-    endDateTime: '',   // End date and time as a string
-  });
+    endDateTime: '', // End date and time as a string
+  })
 
   // Updated color scheme
   const filters = [
@@ -28,67 +28,75 @@ function TodoList() {
     '#34495e',
     '#95a5a6',
     '#7f8c8d',
-  ];
+  ]
 
   useEffect(() => {
-    const user = JSON.parse(Cookie.get("signed_in_user"));
-    axios.get(`${env.api}/task/user/${user._id}/tasks`).then((response) => {
-      setTasks(response.data.tasks);
-    }).catch((error) => {
-      console.log(error);
-    });
-  }, [showModal]);
+    const user = JSON.parse(Cookie.get('signed_in_user') as string)
+    axios
+      .get(`${process.env.API}/task/user/${user._id}/tasks`)
+      .then((response) => {
+        setTasks(response.data.tasks)
+      })
+      .catch((error) => {
+        console.log(error)
+      })
+  }, [showModal])
 
   // Handle opening the modal
   const handleAddTask = () => {
-    setShowModal(true);
-  };
+    setShowModal(true)
+  }
 
   // Handle closing the modal
   const handleCloseModal = () => {
-    setShowModal(false);
+    setShowModal(false)
     setNewTask({
       name: '',
       urgent: false,
       color: '#3498db',
       startDateTime: '',
       endDateTime: '',
-    });
-  };
+    })
+  }
 
   // Handle input changes in the modal
-  const handleInputChange = (e) => {
-    const { name, value, type, checked } = e.target;
+  const handleInputChange = (
+    e: ChangeEvent<HTMLInputElement> & HTMLElement
+  ) => {
+    const { name, value, type, checked } = e.target
     setNewTask((prevTask) => ({
       ...prevTask,
       [name]: type === 'checkbox' ? checked : value,
-    }));
-  };
+    }))
+  }
 
   // Handle submitting the new task
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    if (newTask.name.trim() === '') return;
+  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
+    if (newTask.name.trim() === '') return
 
-    const startDateTime = new Date(newTask.startDateTime);
-    const endDateTime = new Date(newTask.endDateTime);
+    const startDateTime = new Date(newTask.startDateTime)
+    const endDateTime = new Date(newTask.endDateTime)
 
     if (endDateTime < startDateTime) {
-      alert('End date and time cannot be before start date and time.');
-      return;
+      alert('End date and time cannot be before start date and time.')
+      return
     }
 
-    const user = JSON.parse(Cookie.get("signed_in_user"));
-    axios.post(`${env.api}/task/user/${user._id}/tasks`, newTask, {
-      headers: {
-        'Content-Type': 'application/json'
-      }
-    }).then((response) => {
-      handleCloseModal();
-    }).catch((error) => {
-      console.log(error);
-    });
-  };
+    const user = JSON.parse(Cookie.get('signed_in_user') as string)
+    axios
+      .post(`${process.env.API}/task/user/${user._id}/tasks`, newTask, {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      })
+      .then((response) => {
+        handleCloseModal()
+      })
+      .catch((error) => {
+        console.log(error)
+      })
+  }
 
   // Render tasks
   const renderTasks = () => {
@@ -109,8 +117,8 @@ function TodoList() {
           </span>
         </div>
       </li>
-    ));
-  };
+    ))
+  }
 
   return (
     <div className="page-background">
@@ -128,10 +136,7 @@ function TodoList() {
 
       {showModal && (
         <div className="modal-overlay" onClick={handleCloseModal}>
-          <div
-            className="modal-content"
-            onClick={(e) => e.stopPropagation()}
-          >
+          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
             <h2>Add New Task</h2>
             <form onSubmit={handleSubmit}>
               {/* Task Name */}
@@ -154,8 +159,9 @@ function TodoList() {
                   {filters.map((color, index) => (
                     <div
                       key={index}
-                      className={`color-circle ${newTask.color === color ? 'selected' : ''
-                        }`}
+                      className={`color-circle ${
+                        newTask.color === color ? 'selected' : ''
+                      }`}
                       style={{ backgroundColor: color }}
                       onClick={() =>
                         setNewTask((prevTask) => ({ ...prevTask, color }))
@@ -223,7 +229,7 @@ function TodoList() {
         </div>
       )}
     </div>
-  );
+  )
 }
 
-export default TodoList;
+export default TodoList
