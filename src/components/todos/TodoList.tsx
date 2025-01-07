@@ -2,7 +2,7 @@ import axios from 'axios'
 import Cookie from 'js-cookie'
 import React, { ChangeEvent, FormEvent, useEffect, useState } from 'react'
 import './todoList.css'
-import { type Task } from '../../src/types/task'
+import { type Task } from '../../types/task'
 
 function TodoList() {
   const [tasks, setTasks] = useState<Task[]>([])
@@ -98,7 +98,17 @@ function TodoList() {
         handleCloseModal()
       })
       .catch((error) => {
-        console.log(error)
+        const saveToOutbox = async (formData: FormData) => {
+          const outbox = await openOutbox()
+          await addTaskToOutbox(outbox, formData, user._id)
+        }
+
+        const formData = new FormData()
+        for (const [key, value] of Object.entries(newTask)) {
+          formData.append(key, value.toString())
+        }
+        // const formData = new FormData(e.currentTarget)
+        saveToOutbox(formData).then((r) => console.log('Saved to outbox'))
       })
   }
 

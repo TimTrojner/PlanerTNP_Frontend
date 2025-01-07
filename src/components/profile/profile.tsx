@@ -3,7 +3,7 @@ import Cookie from 'js-cookie'
 import React, { ChangeEvent, useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import './profile.css'
-import { User } from '../../src/types/user'
+import { User } from '../../types/user'
 
 function Profile() {
   const navigate = useNavigate()

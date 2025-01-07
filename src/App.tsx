@@ -8,24 +8,7 @@ import Profile from './components/profile/profile'
 import Register from './components/profile/register'
 import TodoList from './components/todos/TodoList'
 
-function registerServiceWorker() {
-  if ('serviceWorker' in navigator) {
-    navigator.serviceWorker
-      .register('./public/worker.ts')
-      .then((registration) => {
-        console.log('Service Worker registered with scope:', registration.scope)
-      })
-      .catch((error) => {
-        console.error('Service Worker registration failed:', error)
-      })
-  }
-}
-
 function App() {
-  // useEffect(() => registerServiceWorker, [])
-
-  console.log(process.env.REACT_APP_API, process.env.REACT_APP_FRONTEND_PORT)
-
   return (
     <Router>
       <Navbar />

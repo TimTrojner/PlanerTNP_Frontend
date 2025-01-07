@@ -9,7 +9,7 @@ import {
 } from 'react'
 import '../../App.css'
 import './calendar.css'
-import { type Task } from '../../src/types/task'
+import { type Task } from '../../types/task'
 import React from 'react'
 
 function getStartOfWeek(date: Date) {
@@ -71,8 +71,8 @@ function Calendar() {
                 _id: user._id,
                 color: schedule.color,
                 name: schedule.name,
-                startDateTime: schedule.start_time, // Rename to match tasks' format
-                endDateTime: schedule.end_time, // Rename to match tasks' format
+                startDateTime: schedule.start_time,
+                endDateTime: schedule.end_time,
               }) satisfies {
                 _id: number
                 color: string
