@@ -1,16 +1,10 @@
 import axios from 'axios'
 import Cookie from 'js-cookie'
-import {
-  ChangeEvent,
-  ChangeEventHandler,
-  useEffect,
-  useRef,
-  useState,
-} from 'react'
+import React, { ChangeEvent, useEffect, useRef, useState } from 'react'
 import '../../App.css'
 import './calendar.css'
 import { type Task } from '../../types/task'
-import React from 'react'
+import { CircleUserRound, LetterTextIcon } from 'lucide-react'
 
 function getStartOfWeek(date: Date) {
   const dayOfWeek = date.getDay()
@@ -24,23 +18,29 @@ function addDays(date: Date, days: number) {
   return newDate
 }
 
-const filters = [
-  '#1abc9c',
-  '#2ecc71',
-  '#3498db',
-  '#9b59b6',
-  '#f1c40f',
-  '#e67e22',
-  '#e74c3c',
-  '#34495e',
-  '#95a5a6',
-  '#7f8c8d',
-]
+// let filters = [
+//   '#1abc9c',
+//   '#2ecc71',
+//   '#3498db',
+//   '#9b59b6',
+//   '#f1c40f',
+//   '#e67e22',
+//   '#e74c3c',
+//   '#34495e',
+//   '#95a5a6',
+//   '#7f8c8d',
+// ]
+
+interface Filters {
+  [color: string]: { subjectName: string; color: string }
+}
+
+let filters = {} as Filters
 
 function Calendar() {
   const [signedIn, setSignedIn] = useState(false)
   const [currentWeek, setCurrentWeek] = useState(getStartOfWeek(new Date()))
-  const [selectedFilter, setSelectedFilter] = useState<number | null>(null)
+  const [selectedFilter, setSelectedFilter] = useState<string | null>(null)
   const [tasks, setTasks] = useState<Task[]>([])
   const [schedules, setSchedules] = useState([])
   const fileInputRef = useRef(null)
@@ -60,26 +60,25 @@ function Calendar() {
           const schedules = scheduleResponse.data.tasks // Assuming schedules are in 'tasks'
 
           // Map over schedules to match task properties
-          const formattedSchedules = schedules.map(
+          const formattedSchedules: Task[] = schedules.map(
             (schedule: {
               name: string
               color: string
               start_time: string
               end_time: string
-            }) =>
-              ({
+            }) => {
+              filters[schedule.color] = {
+                subjectName: schedule.name,
+                color: schedule.color,
+              }
+              return {
                 _id: user._id,
                 color: schedule.color,
                 name: schedule.name,
                 startDateTime: schedule.start_time,
                 endDateTime: schedule.end_time,
-              }) satisfies {
-                _id: number
-                color: string
-                name: string
-                startDateTime: string
-                endDateTime: string
               }
+            }
           )
 
           // Combine user tasks and formatted schedules into a single array
@@ -149,7 +148,7 @@ function Calendar() {
 
     return dayTasks.map((task, index) =>
       selectedFilter !== null &&
-      task.color !== filters[selectedFilter] ? null : (
+      task.color !== filters[selectedFilter].color ? null : (
         <p
           key={index}
           className="task-ribbon"
@@ -192,18 +191,101 @@ function Calendar() {
           →
         </button>
       </div>
+      <div className="filter-box">
+        <div className="group-name">
+          <label htmlFor="name" className="group-label">
+            Name
+          </label>
+          <div className="group-wrapper">
+            <div className="group-element-wrapper">
+              <input
+                id="name"
+                name="name"
+                type="text"
+                placeholder="Enter the name"
+                className="group-element"
+              />
+              <LetterTextIcon className="group-icon" />
+            </div>
+          </div>
+        </div>
+        <div className="group-select">
+          <label htmlFor="study-program" className="group-label">
+            Study program selection
+          </label>
+          <div className="group-wrapper">
+            <select
+              id="study-program"
+              name="study-program"
+              className="group-element"
+              defaultValue=""
+            >
+              <option value="" disabled>
+                Study program
+              </option>
+              {['Računalništvo', 'Informatika', 'Elektrotehnika'].map(
+                (program, index) => (
+                  <option key={index} value={program}>
+                    {program}
+                  </option>
+                )
+              )}
+            </select>
+            <CircleUserRound className="group-icon" />
+          </div>
+        </div>
+        <div className="group-select">
+          <label htmlFor="groups" className="group-label">
+            Group selection
+          </label>
+          <div className="group-wrapper">
+            <select
+              id="groups"
+              name="groups"
+              className="group-element"
+              defaultValue=""
+            >
+              <option value="" disabled>
+                Groups
+              </option>
+              {['RV1', 'RV2', 'RV3'].map((group, index) => (
+                <option key={index} value={group}>
+                  {group}
+                </option>
+              ))}
+            </select>
+            <CircleUserRound className="group-icon" />
+          </div>
+        </div>
+      </div>
+
       <div className="filters">
         <div>Filter:</div>
-        {filters.map((filter, index) => (
-          <div
-            key={index}
-            onClick={() => setSelectedFilter(index)}
-            className={`${selectedFilter === index ? 'active-filter' : 'filter'}`}
-            style={{ backgroundColor: filter }}
-          >
-            ⠀
-          </div>
-        ))}
+        {Object.values(filters).map(({ color, subjectName }, index) => {
+          return (
+            <React.Fragment key={index}>
+              <p
+                style={{
+                  display: 'inline',
+                  marginRight: '10px',
+                  color: color,
+                  textDecoration:
+                    selectedFilter === color ? 'underline' : 'none',
+                  fontSize: '0.8em',
+                  WebkitTextStroke: '0.3px black',
+                  WebkitTextFillColor: color,
+                }}
+              >
+                {subjectName}
+              </p>
+              <div
+                onClick={() => setSelectedFilter(color)}
+                className={`${selectedFilter === color ? 'active-filter' : 'filter'}`}
+                style={{ backgroundColor: color }}
+              ></div>
+            </React.Fragment>
+          )
+        })}
         <div className="clear-filter" onClick={() => setSelectedFilter(null)}>
           Clear
         </div>
